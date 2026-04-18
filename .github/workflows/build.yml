@@ -7,7 +7,7 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  # --- WINDOWS BUILD JOB ---
+  # --- WINDOWS BUILD ---
   build-windows:
     runs-on: windows-latest
     steps:
@@ -28,7 +28,8 @@ jobs:
         id: get_version
         shell: bash
         run: |
-          V_STR=$(grep -oP 'APP_VERSION = "\K[^"]+' jclick.py)
+          # Portable extraction: find line with APP_VERSION, split by double quotes, take 2nd part
+          V_STR=$(grep "APP_VERSION =" jclick.py | cut -d '"' -f 2)
           echo "VERSION=$V_STR" >> $GITHUB_ENV
 
       - name: Build Windows EXE
@@ -47,7 +48,7 @@ jobs:
           name: JClick-Windows-v${{ env.VERSION }}
           path: JClick-${{ env.VERSION }}.exe
 
-  # --- LINUX BUILD JOB ---
+  # --- LINUX BUILD ---
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -72,7 +73,7 @@ jobs:
       - name: Extract Version
         id: get_version
         run: |
-          V_STR=$(grep -oP 'APP_VERSION = "\K[^"]+' jclick.py)
+          V_STR=$(grep "APP_VERSION =" jclick.py | cut -d '"' -f 2)
           echo "VERSION=$V_STR" >> $GITHUB_ENV
 
       - name: Build Linux Binary
