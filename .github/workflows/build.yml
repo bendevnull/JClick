@@ -28,7 +28,6 @@ jobs:
         id: get_version
         shell: bash
         run: |
-          # Portable extraction: find line with APP_VERSION, split by double quotes, take 2nd part
           V_STR=$(grep "APP_VERSION =" jclick.py | cut -d '"' -f 2)
           echo "VERSION=$V_STR" >> $GITHUB_ENV
 
@@ -36,7 +35,8 @@ jobs:
         run: |
           python -m nuitka --standalone `
                            --onefile `
-                           --windows-disable-console `
+                           --assume-yes-for-downloads `
+                           --windows-console-mode=disable `
                            --enable-plugin=tk-inter `
                            --include-package=pynput `
                            --output-filename=JClick-${{ env.VERSION }}.exe `
@@ -80,6 +80,7 @@ jobs:
         run: |
           python3 -m nuitka --standalone \
                             --onefile \
+                            --assume-yes-for-downloads \
                             --enable-plugin=tk-inter \
                             --include-package=pynput \
                             --output-filename=JClick-${{ env.VERSION }}.bin \
